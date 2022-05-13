@@ -36,6 +36,13 @@ test('correct ammount of blogposts are returned', async () => {
     expect(blogs.body).toHaveLength(initialBlogs.length)
 })
 
+test('id of all blogs exists', async () => {
+    const blogs = await Blog.find({})
+    const processedBlogs = blogs.map(blog => blog._id)
+
+    expect(processedBlogs).toBeDefined()
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })

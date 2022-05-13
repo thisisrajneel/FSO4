@@ -43,6 +43,25 @@ test('id of all blogs exists', async () => {
     expect(processedBlogs).toBeDefined()
 })
 
+test('new blog post created', async () => {
+    const newBlog =  {
+        title: 'New Blog',
+        author: 'Random Person',
+        url: 'www.geeksforgeeks.com',
+        likes: 150
+    }
+
+    await api.post('/api/blogs')
+                .send(newBlog)
+                .expect(201)
+                .expect('Content-Type', /application\/json/)
+    
+    const blogsAtEnd = await Blog.find({})
+    const blogsAtEndJSON = blogsAtEnd.map(blog => blog.toJSON())
+
+    expect(blogsAtEndJSON).toHaveLength(initialBlogs.length + 1)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })

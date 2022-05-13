@@ -62,6 +62,25 @@ test('new blog post created', async () => {
     expect(blogsAtEndJSON).toHaveLength(initialBlogs.length + 1)
 })
 
+test('if the request is missing the likes property, it will default to 0', async () => {
+    const newBlog =  {
+        title: 'New Blog 2',
+        author: 'Random Human',
+        url: 'www.leetcode.com'
+    }
+
+    await api.post('/api/blogs')
+                .send(newBlog)
+                .expect(201)
+                .expect('Content-Type', /application\/json/)
+    
+    const blogsAtEnd = await Blog.find({})
+    const blogsAtEndJSON = blogsAtEnd.map(blog => blog.toJSON())
+    const addedBlog = blogsAtEndJSON.find(blog => blog.title === 'New Blog 2')
+
+    expect(addedBlog.likes).toBe(0)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
